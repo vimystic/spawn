@@ -13,7 +13,11 @@ endif
 
 DATE := $(shell date '+%Y-%m-%dT%H:%M:%S')
 HEAD = $(shell git rev-parse HEAD)
-LD_FLAGS = -X main.SpawnVersion=$(VERSION)
+# MacOS sequoia + XCode 16 causes the binary to instantly die
+# Stripping the debug info with -s -w fixes this so the binary
+# is properly signed
+# ref: https://github.com/rollchains/spawn/issues/248
+LD_FLAGS = -X main.SpawnVersion=$(VERSION) -s -w
 BUILD_FLAGS = -mod=readonly -ldflags='$(LD_FLAGS)'
 
 ## mod-tidy: go mod tidy spawn, simapp, and interchaintest with proper go.mod suffixes
